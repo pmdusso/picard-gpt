@@ -52,11 +52,30 @@ python run_scraper.py --reset
 
 ### 2. Build the prompt
 
+**Full catalog:**
 ```bash
 python build_prompt.py
 ```
 
-Output: `prompts/ready_prompt.md`
+**Specialized prompts (Dietary Filters):**
+To save tokens and ensure 100% compliance, you can generate prompts pre-filtered for specific dietary needs:
+
+```bash
+# Gluten-free only
+python build_prompt.py --gluten-free --output prompts/ready_prompt_gf.md
+
+# Vegan only
+python build_prompt.py --vegan --output prompts/ready_prompt_vegan.md
+
+# Vegetarian and Lactose-free
+python build_prompt.py --vegetarian --lactose-free --output prompts/ready_prompt_veg_lf.md
+```
+
+**Generate all variations at once:**
+```bash
+python build_prompt.py --all
+```
+This will create `ready_prompt.md` (full) plus specialized versions like `ready_prompt_vegan.md`, `ready_prompt_gf.md`, etc.
 
 ### 3. Use with an LLM
 
