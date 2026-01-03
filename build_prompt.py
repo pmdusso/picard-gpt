@@ -27,19 +27,19 @@ def build_prompt(catalog_path: str, template_path: str, output_path: str) -> Non
     products_for_prompt = []
     for p in catalog["products"]:
         products_for_prompt.append({
-            "name": p["name"],
-            "price": p["price"],
-            "category": p["category"],
-            "type": p["product_type"],
-            "vegetarian": p["is_vegetarian"],
-            "vegan": p["is_vegan"],
-            "gluten_free": p["is_gluten_free"],
-            "lactose_free": p["is_lactose_free"],
-            "servings": p.get("servings"),
-            "weight_grams": p.get("weight_grams"),
+            "n": p["name"],
+            "p": p["price"],
+            "c": p["category"],
+            "t": p["product_type"],
+            "vg": p["is_vegetarian"],
+            "vn": p["is_vegan"],
+            "gf": p["is_gluten_free"],
+            "lf": p["is_lactose_free"],
+            "s": p.get("servings"),
+            "w": p.get("weight_grams"),
         })
 
-    products_json = json.dumps(products_for_prompt, ensure_ascii=False, indent=2)
+    products_json = json.dumps(products_for_prompt, ensure_ascii=False)
 
     # Replace placeholder
     final_prompt = template.replace("{{PRODUCTS_JSON}}", products_json)

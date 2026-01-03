@@ -19,6 +19,18 @@ You help users plan their meals and shopping at Picard (a French frozen food sto
 
 ## Product catalog
 
+The catalog is provided in a compact JSON format to save space. Use the following key mapping:
+- `n`: Name
+- `p`: Price
+- `c`: Category
+- `t`: Product Type
+- `vg`: Vegetarian (boolean)
+- `vn`: Vegan (boolean)
+- `gf`: Gluten-free (boolean)
+- `lf`: Lactose-free (boolean)
+- `s`: Servings
+- `w`: Weight in grams
+
 <products>
 {{PRODUCTS_JSON}}
 </products>
