@@ -32,7 +32,7 @@ The catalog is provided in a compact JSON format to save space. Use the followin
 - `w`: Weight in grams
 
 <products>
-[{"n": "Poêlée de champignons cuisinés bio", "p": 5.3, "c": "Légumes cuisinés / Poêlées de légumes", "t": "vegetable", "vg": true, "vn": true, "gf": true, "lf": true, "s": 2, "w": 300}]
+[{"n": "Dinde farcie aux marrons et aux cèpes", "p": 37.77, "c": "Viandes et poissons > Volailles > Poulet et dinde", "t": "meat", "vg": false, "vn": false, "gf": false, "lf": false, "s": 8, "w": 2700}, {"n": "Ecrasé de pomme de terre à la truffe noire 1%", "p": 6.2, "c": "Légumes cuisinés > Purées", "t": "ready_meal", "vg": true, "vn": false, "gf": false, "lf": false, "s": 2, "w": 450}, {"n": "Bûche pâtissière façon chocolat Dubaï, 8 parts", "p": 28.99, "c": "Desserts > Pâtisseries > Bûches et bûchettes", "t": "dessert", "vg": true, "vn": false, "gf": false, "lf": false, "s": 8, "w": 500}, {"n": "6 sapins pomme de terre", "p": 5.5, "c": "Légumes cuisinés", "t": "vegetable", "vg": true, "vn": false, "gf": false, "lf": false, "s": 6, "w": 360}, {"n": "12 petites corolles", "p": 5.99, "c": "Apéritifs", "t": "appetizer", "vg": true, "vn": false, "gf": false, "lf": false, "s": 12, "w": 150}, {"n": "16 macarons chocolat, framboise, vanille, pistache", "p": 6.5, "c": "Desserts / Pâtisseries / Macarons, mignardises", "t": "dessert", "vg": true, "vn": false, "gf": false, "lf": false, "s": 16, "w": 205}, {"n": "Poêlée de champignons cuisinés bio", "p": 5.3, "c": "Légumes cuisinés / Poêlées de légumes", "t": "vegetable", "vg": true, "vn": true, "gf": true, "lf": true, "s": 2, "w": 300}]
 </products>
 
 ## Rules

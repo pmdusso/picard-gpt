@@ -16,9 +16,6 @@ ENV/
 data/urls.json
 data/products.json
 
-# Generated prompts
-prompts/ready_prompt.md
-
 # IDE
 .idea/
 .vscode/
