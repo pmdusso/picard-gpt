@@ -6,7 +6,7 @@ A personal shopping assistant for [Picard](https://www.picard.fr) (French frozen
 
 - Scrapes Picard's product catalog using [Firecrawl](https://firecrawl.dev)
 - Extracts product data: name, price, category, type, dietary flags
-- Generates an LLM system prompt for personalized meal planning
+- Generates a token-optimized LLM system prompt for personalized meal planning
 - Supports dietary filters: vegetarian, vegan, gluten-free, lactose-free
 - Budget-aware meal planning (weekly/monthly)
 - Incremental scraping with resume support
@@ -86,7 +86,7 @@ picard-gpt/
 1. **Mapping**: Uses Firecrawl's `map_url` to discover all product URLs on picard.fr
 2. **Crawling**: Extracts product data from each URL using Pydantic schema
 3. **Tracking**: Maintains state of pending/crawled/failed URLs for incremental runs
-4. **Prompt Generation**: Injects the product catalog into a system prompt template
+4. **Prompt Generation**: Injects the product catalog into a system prompt template using compact JSON mapping to minimize token usage
 5. **Interaction**: The LLM uses the catalog to recommend products, plan meals, and translate French product names
 
 ## License
