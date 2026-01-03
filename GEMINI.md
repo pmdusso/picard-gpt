@@ -25,9 +25,10 @@ The resulting prompt allows an LLM to act as a knowledgeable shopping assistant 
     *   **Crawling:** Processes pending URLs from `urls.json`, extracts data using Pydantic models, and appends results to `data/products.json`.
     *   **Incremental/Resumable:** The process tracks finished and failed URLs, allowing it to be stopped and resumed without duplicating work.
 2.  **Generation:** `build_prompt.py` reads the JSON catalog.
-    *   Minifies the data (keeping only relevant fields for the LLM).
+    *   Minifies the data (keeping only relevant fields for the LLM) and uses a compact JSON format with abbreviated keys (n, p, vg, etc.) to minimize token usage.
+    *   Applies dietary filters (optional) to generate specialized prompts for specific needs.
     *   Injects it into `prompts/system_prompt.md` replacing the `{{PRODUCTS_JSON}}` placeholder.
-    *   Outputs the final artifact to `prompts/ready_prompt.md`.
+    *   Outputs the final artifact to `prompts/ready_prompt.md` (or variation files).
 
 ## Key Files
 
@@ -90,11 +91,34 @@ python run_scraper.py --reset
 
 ### 4. Building the Prompt
 
-Once `data/products.json` is populated:
+Once `data/products.json` is populated, you can generate the system prompt:
+
+**Full catalog:**
 ```bash
 python build_prompt.py
 ```
-The final prompt will be available at `prompts/ready_prompt.md`.
+
+**Specialized variations (Dietary Filters):**
+Generate a single specialized prompt:
+```bash
+python build_prompt.py --gluten-free --output prompts/ready_prompt_gf.md
+```
+
+**Generate all variations at once:**
+```bash
+python build_prompt.py --all
+```
+This creates `ready_prompt.md` plus variations for vegetarian, vegan, gluten-free, and lactose-free users.
+
+The final prompts will be available in the `prompts/` directory.
+
+## Token Optimization & Prompt Engineering
+
+To handle 1,500+ products within LLM context limits:
+*   **Abbreviated Keys:** JSON keys are shortened (e.g., `name` -> `n`, `price` -> `p`).
+*   **No Indentation:** The injected JSON is minified.
+*   **Dietary Pre-filtering:** By generating prompts for specific needs, we can significantly reduce the number of products injected, ensuring high precision and lower costs.
+*   **Prompt Legend:** The `system_prompt.md` template includes a key mapping section to help the LLM interpret the compact format.
 
 ## Development Conventions
 

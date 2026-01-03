@@ -26,15 +26,25 @@ python run_scraper.py --status
 python run_scraper.py --reset
 
 # Build the final prompt
-python build_prompt.py
+python build_prompt.py         # Full catalog
+python build_prompt.py --all   # Full catalog + dietary variations
 ```
+
+## Dietary Filtering
+
+The `build_prompt.py` script supports dietary filtering to generate specialized, token-efficient prompts:
+- `--vegetarian`
+- `--vegan`
+- `--gluten-free`
+- `--lactose-free`
+- `--all`: Generates all variations at once (e.g., `ready_prompt_vegan.md`)
 
 ## Architecture
 
 **Data Flow:**
 1. `--map` → discovers URLs → saves to `data/urls.json`
 2. `--crawl` → extracts products from pending URLs → appends to `data/products.json`
-3. `build_prompt.py` → injects products into template → outputs `prompts/ready_prompt.md`
+3. `build_prompt.py` → filters (optional) → injects products (compact JSON) into template → outputs `prompts/ready_prompt.md`
 
 **Key Components:**
 - `scraper/schemas.py`: Pydantic `Product` model with dietary flags
