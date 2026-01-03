@@ -2,6 +2,8 @@
 
 A personal shopping assistant for [Picard](https://www.picard.fr) (French frozen food store) that helps non-French speakers navigate the product catalog, plan meals within a budget, and respect dietary restrictions.
 
+> 💡 **Not a developer and just want to grab the prompts?** [Check our User Guide here!](./USER_GUIDE.md)
+
 ## Features
 
 - Scrapes Picard's product catalog using [Firecrawl](https://firecrawl.dev)
