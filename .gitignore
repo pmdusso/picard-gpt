@@ -25,3 +25,6 @@ data/products.json
 # OS
 .DS_Store
 Thumbs.db
+
+# Documentation
+docs/
