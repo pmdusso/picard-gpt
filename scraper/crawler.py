@@ -56,6 +56,25 @@ def reset_data(urls_path: Path = DEFAULT_URLS_PATH, products_path: Path = DEFAUL
             logger.info(f"{path} does not exist, skipping")
 
 
+def retry_failed(urls_path: Path = DEFAULT_URLS_PATH) -> int:
+    """Move all failed URLs back to pending for retry."""
+    state = load_url_state(urls_path)
+
+    failed_count = len(state["failed"])
+    if failed_count == 0:
+        logger.info("No failed URLs to retry.")
+        return 0
+
+    # Move failed to pending
+    state["pending"].extend(state["failed"])
+    state["failed"] = []
+
+    save_url_state(state, urls_path)
+    logger.info(f"Moved {failed_count} failed URLs back to pending")
+
+    return failed_count
+
+
 # =============================================================================
 # URL Discovery (Mapping)
 # =============================================================================

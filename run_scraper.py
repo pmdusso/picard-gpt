@@ -18,6 +18,7 @@ from scraper.crawler import (
     crawl_pending,
     crawl_all,
     reset_data,
+    retry_failed,
     load_url_state,
     load_catalog,
     DEFAULT_URLS_PATH,
@@ -92,6 +93,11 @@ Examples:
         action="store_true",
         help="Delete all data files and start fresh"
     )
+    parser.add_argument(
+        "--retry-failed",
+        action="store_true",
+        help="Move failed URLs back to pending for retry"
+    )
 
     args = parser.parse_args()
 
@@ -108,6 +114,20 @@ Examples:
             print("Data reset complete.")
         else:
             print("Cancelled.")
+        return
+
+    # Handle --retry-failed
+    if args.retry_failed:
+        state = load_url_state()
+        failed_count = len(state["failed"])
+        if failed_count == 0:
+            print("No failed URLs to retry.")
+            return
+
+        count = retry_failed()
+        print(f"Moved {count} failed URLs back to pending.")
+        print()
+        print("Next: Run 'python run_scraper.py --crawl' to retry")
         return
 
     # Handle --map
