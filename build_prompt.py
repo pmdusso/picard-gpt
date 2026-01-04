@@ -11,6 +11,42 @@ import json
 from pathlib import Path
 
 
+# Paleo diet exclusion keywords (grains, dairy, legumes, processed)
+PALEO_EXCLUDE_KEYWORDS = [
+    'pizza', 'pâte', 'pain', 'riz', 'pâtes', 'crêpe', 'gaufre',
+    'brioche', 'croissant', 'biscuit', 'gâteau', 'tarte', 'feuilleté',
+    'gratin', 'béchamel', 'fromage', 'emmental', 'mozzarella',
+    'haricot', 'lentille', 'pois chiche', 'fève'
+]
+
+
+def is_paleo_excluded(product: dict) -> bool:
+    """Check if product should be excluded from paleo diet."""
+    text = (product['name'] + ' ' + product['category']).lower()
+    return any(kw in text for kw in PALEO_EXCLUDE_KEYWORDS)
+
+
+def filter_paleo(products: list) -> list:
+    """Filter products for paleo diet compatibility."""
+    paleo_types = ['meat', 'fish', 'vegetable', 'fruit']
+    result = []
+
+    for p in products:
+        # Skip if excluded by keywords
+        if is_paleo_excluded(p):
+            continue
+
+        # Include base paleo types
+        if p['product_type'] in paleo_types:
+            result.append(p)
+        # Include ready_meals only if gluten-free AND lactose-free
+        elif p['product_type'] == 'ready_meal':
+            if p.get('is_gluten_free') and p.get('is_lactose_free'):
+                result.append(p)
+
+    return result
+
+
 def build_prompt(catalog_path: str, template_path: str, output_path: str, filters: dict = None) -> None:
     """Build the final prompt with product data and optional filtering."""
 
@@ -25,6 +61,10 @@ def build_prompt(catalog_path: str, template_path: str, output_path: str, filter
     # Apply filters if provided
     products = catalog["products"]
     if filters:
+        # Paleo is a special composite filter
+        if filters.get("paleo"):
+            products = filter_paleo(products)
+        # Simple boolean filters
         if filters.get("vegetarian"):
             products = [p for p in products if p.get("is_vegetarian")]
         if filters.get("vegan"):
@@ -123,6 +163,11 @@ def main():
         help="Filter for lactose-free products only"
     )
     parser.add_argument(
+        "--paleo",
+        action="store_true",
+        help="Filter for paleo diet (meat, fish, vegetables, fruits; no grains/dairy/legumes)"
+    )
+    parser.add_argument(
         "--all",
         action="store_true",
         help="Generate all prompt variations (full + dietary filters)"
@@ -139,6 +184,7 @@ def main():
             ("vegan", {"vegan": True}),
             ("gluten_free", {"gluten_free": True}),
             ("lactose_free", {"lactose_free": True}),
+            ("paleo", {"paleo": True}),
         ]
 
         base_output = Path(args.output)
@@ -151,7 +197,8 @@ def main():
             "vegetarian": args.vegetarian,
             "vegan": args.vegan,
             "gluten_free": args.gluten_free,
-            "lactose_free": args.lactose_free
+            "lactose_free": args.lactose_free,
+            "paleo": args.paleo,
         }
         build_prompt(args.catalog, args.template, args.output, filters)
 
