@@ -25,6 +25,7 @@ Choose the version that fits you best. Using a specialized version makes the AI 
 | **Gluten-Free** | Safe for celiacs and gluten-sensitive users. | [Click here to open](https://raw.githubusercontent.com/pmdusso/picard-gpt/main/prompts/ready_prompt_gluten_free.md) |
 | **Lactose-Free** | No dairy products included. | [Click here to open](https://raw.githubusercontent.com/pmdusso/picard-gpt/main/prompts/ready_prompt_lactose_free.md) |
 | **Paleo** | Meat, fish, vegetables, fruits. No grains, dairy, or legumes. | [Click here to open](https://raw.githubusercontent.com/pmdusso/picard-gpt/main/prompts/ready_prompt_paleo.md) |
+| **Sweets** | Desserts, appetizers, fruits. Perfect for parties and entertaining. | [Click here to open](https://raw.githubusercontent.com/pmdusso/picard-gpt/main/prompts/ready_prompt_sweets.md) |
 
 ---
 
