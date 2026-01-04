@@ -19,6 +19,8 @@ from scraper.crawler import (
     crawl_all,
     reset_data,
     retry_failed,
+    update_product_fields,
+    get_products_missing_fields,
     load_url_state,
     load_catalog,
     DEFAULT_URLS_PATH,
@@ -49,6 +51,11 @@ def show_status():
     print(f"  Products: {catalog['metadata']['product_count']:,}")
     if catalog["metadata"].get("last_updated_at"):
         print(f"  Last updated: {catalog['metadata']['last_updated_at']}")
+
+    # Check for missing fields
+    missing = get_products_missing_fields()
+    if missing:
+        print(f"  Missing fields: {len(missing):,} products need update (use --update-fields)")
 
     print()
 
@@ -98,6 +105,11 @@ Examples:
         action="store_true",
         help="Move failed URLs back to pending for retry"
     )
+    parser.add_argument(
+        "--update-fields",
+        action="store_true",
+        help="Update existing products with missing fields (ref, price_per_kg, nutriscore)"
+    )
 
     args = parser.parse_args()
 
@@ -128,6 +140,31 @@ Examples:
         print(f"Moved {count} failed URLs back to pending.")
         print()
         print("Next: Run 'python run_scraper.py --crawl' to retry")
+        return
+
+    # Handle --update-fields
+    if args.update_fields:
+        missing = get_products_missing_fields()
+        if not missing:
+            print("All products have the required fields (ref, price_per_kg, nutriscore).")
+            return
+
+        print(f"Found {len(missing)} products missing fields.")
+        if args.limit:
+            print(f"  Limit: {args.limit}")
+        print()
+
+        updated, failed = update_product_fields(limit=args.limit)
+
+        print()
+        print("=" * 50)
+        print("Update complete!")
+        print(f"  Updated: {updated} products")
+        print(f"  Failed: {failed} products")
+
+        # Show remaining
+        remaining = get_products_missing_fields()
+        print(f"  Remaining: {len(remaining)} products still missing fields")
         return
 
     # Handle --map

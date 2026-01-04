@@ -38,7 +38,7 @@ def build_prompt(catalog_path: str, template_path: str, output_path: str, filter
     # (only include fields needed for recommendations)
     products_for_prompt = []
     for p in products:
-        products_for_prompt.append({
+        product = {
             "n": p["name"],
             "p": p["price"],
             "c": p["category"],
@@ -49,7 +49,15 @@ def build_prompt(catalog_path: str, template_path: str, output_path: str, filter
             "lf": p["is_lactose_free"],
             "s": p.get("servings"),
             "w": p.get("weight_grams"),
-        })
+        }
+        # Add new fields if present
+        if p.get("ref"):
+            product["ref"] = p["ref"]
+        if p.get("price_per_kg"):
+            product["pk"] = p["price_per_kg"]  # pk = price per kg
+        if p.get("nutriscore"):
+            product["ns"] = p["nutriscore"]  # ns = nutriscore
+        products_for_prompt.append(product)
 
     products_json = json.dumps(products_for_prompt, ensure_ascii=False)
 

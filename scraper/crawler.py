@@ -142,14 +142,22 @@ def extract_product(url: str) -> Product | None:
             formats=["extract"],
             extract={
                 "schema": Product.model_json_schema(),
-                "prompt": "Extract the product information from this Picard frozen food product page. Determine dietary flags (vegetarian, vegan, gluten-free, lactose-free) from ingredients or labels if available."
+                "prompt": """Extract the product information from this Picard frozen food product page:
+- ref: Product reference ID (e.g., '060489' from 'Ref.: 060489' or from the URL)
+- price_per_kg: Price per kilogram if shown (e.g., 24.97 from '€24,97/kg')
+- nutriscore: NutriScore rating (A, B, C, D, or E) - look for nutriscore image/badge
+- Dietary flags (vegetarian, vegan, gluten-free, lactose-free) from ingredients or labels"""
             }
         ) if hasattr(app, 'scrape_url') else app.v1.scrape_url(
             url,
             formats=["extract"],
             extract={
                 "schema": Product.model_json_schema(),
-                "prompt": "Extract the product information from this Picard frozen food product page. Determine dietary flags (vegetarian, vegan, gluten-free, lactose-free) from ingredients or labels if available."
+                "prompt": """Extract the product information from this Picard frozen food product page:
+- ref: Product reference ID (e.g., '060489' from 'Ref.: 060489' or from the URL)
+- price_per_kg: Price per kilogram if shown (e.g., 24.97 from '€24,97/kg')
+- nutriscore: NutriScore rating (A, B, C, D, or E) - look for nutriscore image/badge
+- Dietary flags (vegetarian, vegan, gluten-free, lactose-free) from ingredients or labels"""
             }
         )
 
@@ -303,6 +311,88 @@ def save_catalog(products: list[Product], path: str | Path) -> None:
         json.dump(catalog, f, ensure_ascii=False, indent=2)
 
     logger.info(f"Saved {len(products)} products to {path}")
+
+
+def get_products_missing_fields(
+    products_path: Path = DEFAULT_PRODUCTS_PATH,
+    fields: list[str] = None
+) -> list[dict]:
+    """Get products that are missing specified fields."""
+    if fields is None:
+        fields = ["ref", "price_per_kg", "nutriscore"]
+
+    catalog = load_catalog(products_path)
+    missing = []
+
+    for product in catalog["products"]:
+        # Check if any of the required fields are missing or None
+        if any(product.get(field) is None for field in fields):
+            missing.append(product)
+
+    return missing
+
+
+def update_product_fields(
+    limit: int | None = None,
+    products_path: Path = DEFAULT_PRODUCTS_PATH
+) -> tuple[int, int]:
+    """
+    Re-extract products that are missing new fields (ref, price_per_kg, nutriscore).
+
+    Returns:
+        Tuple of (updated count, failed count)
+    """
+    catalog = load_catalog(products_path)
+    products = catalog["products"]
+
+    # Find products missing the new fields
+    fields_to_check = ["ref", "price_per_kg", "nutriscore"]
+    products_to_update = []
+
+    for i, product in enumerate(products):
+        if any(product.get(field) is None for field in fields_to_check):
+            products_to_update.append((i, product))
+
+    if not products_to_update:
+        logger.info("All products have the required fields. Nothing to update.")
+        return 0, 0
+
+    # Apply limit
+    if limit:
+        products_to_update = products_to_update[:limit]
+
+    logger.info(f"Updating {len(products_to_update)} products with missing fields")
+
+    updated = 0
+    failed = 0
+
+    for idx, (product_index, old_product) in enumerate(products_to_update, 1):
+        url = old_product["url"]
+        logger.info(f"Updating {idx}/{len(products_to_update)}: {old_product['name']}")
+
+        new_product = extract_product(url)
+
+        if new_product:
+            # Merge: keep old data, update with new fields
+            new_data = new_product.model_dump()
+            for field in fields_to_check:
+                if new_data.get(field) is not None:
+                    old_product[field] = new_data[field]
+
+            products[product_index] = old_product
+            updated += 1
+            logger.info(f"  -> Updated: ref={old_product.get('ref')}, pk={old_product.get('price_per_kg')}, ns={old_product.get('nutriscore')}")
+        else:
+            failed += 1
+            logger.warning(f"  -> Failed to update")
+
+    # Save updated catalog
+    catalog["metadata"]["last_updated_at"] = datetime.now().isoformat()
+    with open(products_path, "w", encoding="utf-8") as f:
+        json.dump(catalog, f, ensure_ascii=False, indent=2)
+
+    logger.info(f"Updated {updated} products, {failed} failed")
+    return updated, failed
 
 
 # =============================================================================
