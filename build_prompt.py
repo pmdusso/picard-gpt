@@ -19,6 +19,9 @@ PALEO_EXCLUDE_KEYWORDS = [
     'haricot', 'lentille', 'pois chiche', 'fève'
 ]
 
+# Lite version: main meals + breakfast (no desserts, appetizers, fruits, other)
+LITE_TYPES = ['ready_meal', 'meat', 'fish', 'vegetable', 'bread', 'breakfast']
+
 
 def is_paleo_excluded(product: dict) -> bool:
     """Check if product should be excluded from paleo diet."""
@@ -47,6 +50,11 @@ def filter_paleo(products: list) -> list:
     return result
 
 
+def filter_lite(products: list) -> list:
+    """Filter for lite version: main meals + breakfast, no desserts/appetizers."""
+    return [p for p in products if p['product_type'] in LITE_TYPES]
+
+
 def build_prompt(catalog_path: str, template_path: str, output_path: str, filters: dict = None) -> None:
     """Build the final prompt with product data and optional filtering."""
 
@@ -61,9 +69,11 @@ def build_prompt(catalog_path: str, template_path: str, output_path: str, filter
     # Apply filters if provided
     products = catalog["products"]
     if filters:
-        # Paleo is a special composite filter
+        # Special composite filters
         if filters.get("paleo"):
             products = filter_paleo(products)
+        if filters.get("lite"):
+            products = filter_lite(products)
         # Simple boolean filters
         if filters.get("vegetarian"):
             products = [p for p in products if p.get("is_vegetarian")]
@@ -168,6 +178,11 @@ def main():
         help="Filter for paleo diet (meat, fish, vegetables, fruits; no grains/dairy/legumes)"
     )
     parser.add_argument(
+        "--lite",
+        action="store_true",
+        help="Lite version: main meals + breakfast (no desserts, appetizers, fruits)"
+    )
+    parser.add_argument(
         "--all",
         action="store_true",
         help="Generate all prompt variations (full + dietary filters)"
@@ -185,6 +200,7 @@ def main():
             ("gluten_free", {"gluten_free": True}),
             ("lactose_free", {"lactose_free": True}),
             ("paleo", {"paleo": True}),
+            ("lite", {"lite": True}),
         ]
 
         base_output = Path(args.output)
@@ -199,6 +215,7 @@ def main():
             "gluten_free": args.gluten_free,
             "lactose_free": args.lactose_free,
             "paleo": args.paleo,
+            "lite": args.lite,
         }
         build_prompt(args.catalog, args.template, args.output, filters)
 

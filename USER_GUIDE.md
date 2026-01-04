@@ -19,10 +19,12 @@ Choose the version that fits you best. Using a specialized version makes the AI 
 | Diet Type | Description | Raw Prompt Link (Copy this!) |
 | :--- | :--- | :--- |
 | **All-in-One** | The complete catalog of all products. | [Click here to open](https://raw.githubusercontent.com/pmdusso/picard-gpt/main/prompts/ready_prompt.md) |
+| **Lite** ⭐ | Main meals + breakfast. No desserts/appetizers. Smaller file, works better with ChatGPT/Gemini. | [Click here to open](https://raw.githubusercontent.com/pmdusso/picard-gpt/main/prompts/ready_prompt_lite.md) |
 | **Vegetarian** | Pre-filtered for vegetarians. | [Click here to open](https://raw.githubusercontent.com/pmdusso/picard-gpt/main/prompts/ready_prompt_vegetarian.md) |
 | **Vegan** | Only 100% plant-based products. | [Click here to open](https://raw.githubusercontent.com/pmdusso/picard-gpt/main/prompts/ready_prompt_vegan.md) |
 | **Gluten-Free** | Safe for celiacs and gluten-sensitive users. | [Click here to open](https://raw.githubusercontent.com/pmdusso/picard-gpt/main/prompts/ready_prompt_gluten_free.md) |
 | **Lactose-Free** | No dairy products included. | [Click here to open](https://raw.githubusercontent.com/pmdusso/picard-gpt/main/prompts/ready_prompt_lactose_free.md) |
+| **Paleo** | Meat, fish, vegetables, fruits. No grains, dairy, or legumes. | [Click here to open](https://raw.githubusercontent.com/pmdusso/picard-gpt/main/prompts/ready_prompt_paleo.md) |
 
 ---
 
